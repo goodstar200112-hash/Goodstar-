@@ -1,1 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Good Star Enterprises</title>
+  <style>
+    :root{
+      --brand:#007bff; --brand-dark:#005bb5; --accent:#25D366; --bg:#f5f6f8;
+      --card:#ffffff; --muted:#6b7280; --radius:8px; --shadow:0 6px 18px rgba(15,23,42,0.08);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:#111;}
+    header{background:linear-gradient(90deg,var(--brand),var(--brand-dark));color:#fff;padding:28px 12px;text-align:center}
+    header h1{margin:0;font-size:20px;letter-spacing:0.3px}
+    header p{margin:6px 0 0;font-size:13px;opacity:.95}
+    .wrap{max-width:980px;margin:20px auto;padding:0 16px}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:20px}
+    @media(max-width:880px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+    h2{margin:0 0 12px;font-size:18px}
+    .products .product{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:8px;border:1px solid #eee;background:linear-gradient(180deg,rgba(255,255,255,0.9),#fff)}
+    .product img{width:120px;height:80px;object-fit:cover;border-radius:6px}
+    .product .info{flex:1}
+    .product h3{margin:0;font-size:16px}
+    .price{color:var(--muted);margin-top:6px;font-size:14px}
+    .actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+    .btn{display:inline-block;padding:8px 12px;border-radius:6px;border:0;cursor:pointer;font-weight:600}
+    .btn-primary{background:var(--brand);color:#fff}
+    .btn-outline{background:transparent;border:1px solid #ddd;color:#111}
+    .btn-ws{background:var(--accent);color:#fff}
+    .cart-box{position:sticky;top:20px}
+    .cart-list{list-style:none;padding:0;margin:0;max-height:220px;overflow:auto}
+    .cart-item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed #eee}
+    .cart-item span{font-size:14px}
+    .tot{font-weight:700;margin-top:12px;font-size:16px}
+    .small{font-size:13px;color:var(--muted)}
+    /* modal */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:20px;z-index:60}
+    .modal{width:100%;max-width:560px;background:#fff;border-radius:10px;padding:18px;box-shadow:0 10px 40px rgba(2,6,23,0.3)}
+    .row{display:flex;gap:10px}
+    .col{flex:1}
+    input,textarea,select{width:100%;padding:10px;border-radius:6px;border:1px solid #ddd;font-size:14px}
+    label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+    .form-foot{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:12px}
+    .note{font-size:12px;color:#666}
+    footer{padding:30px 0;text-align:center;color:var(--muted);font-size:13px}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Good Star Enterprises</h1>
+    <p>Room Heaters | Fast Delivery | Best Price</p>
+  </header>
 
+  <main class="wrap">
+    <div class="grid">
+      <!-- PRODUCTS LIST -->
+      <div class="card products">
+        <h2>Products</h2>
+
+        <!-- Product template repeated -->
+        <div class="product" data-id="p1" data-name="Priya Style Heater RET-450" data-price="599">
+          <img src="https://via.placeholder.com/600x400?text=RET-450" alt="">
+          <div class="info">
+            <h3>Priya Style Heater RET-450</h3>
+            <div class="price">Price: <strong>Rs 599</strong></div>
+            <div class="actions">
+              <button class="btn btn-primary" onclick="addToCart('p1')">Add to Cart</button>
+              <a class="btn btn-ws" href="https://wa.me/917210558***?text=I%20want%20to%20order%20Priya%20Style%20Heater%20RET-450" target="_blank">Order via WhatsApp</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product" data-id="p2" data-name="Good Star Classic Heater RET-525" data-price="899">
+          <img src="https://via.placeholder.com/600x400?text=RET-525" alt="">
+          <div class="info">
+            <h3>Good Star Classic Heater RET-525</h3>
+            <div class="price">Price: <strong>Rs 899</strong></div>
+            <div class="actions">
+              <button class="btn btn-primary" onclick="addToCart('p2')">Add to Cart</button>
+              <a class="btn btn-ws" href="https://wa.me/917210558***?text=I%20want%20to%20order%20Good%20Star%20Classic%20Heater%20RET-525" target="_blank">Order via WhatsApp</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add more products as needed: follow same data-* attributes -->
+
+        <div style="margin-top:16px" class="small">Tip: Add items to cart then click <strong>View Cart</strong> to checkout.</div>
+      </div>
+
+      <!-- CART & CHECKOUT -->
+      <aside class="cart-box">
+        <div class="card">
+          <h2>Your Cart</h2>
+          <ul id="cartList" class="cart-list">
+            <li class="small">Cart is empty</li>
+          </ul>
+
+          <div class="tot small" id="totalPrice">Total: Rs 0</div>
+
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="btn btn-outline" onclick="openCart()">View Cart</button>
+            <button class="btn btn-primary" onclick="openCheckout()" id="checkoutBtn" disabled>Checkout</button>
+          </div>
+
+          <div style="margin-top:12px" class="small">Secure Checkout • Cash on Delivery available</div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- CART MODAL -->
+  <div id="modalCart" class="modal-bg" onclick="closeModal(event)">
+    <div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+      <h3>Your Cart</h3>
+      <div id="cartDetails"></div>
+      <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+        <div class="small" id="cartSummary"></div>
+        <div>
+          <button class="btn btn-outline" onclick="clearCart()">Clear</button>
+          <button class="btn btn-primary" onclick="openCheckout()">Proceed to Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div id="modalCheckout" class="modal-bg" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h3>Checkout</h3>
+
+      <form id="orderForm" onsubmit="submitOrder(event)">
+        <div>
+          <label for="name">Full name</label>
+          <input id="name" name="name" placeholder="Your name" required />
+        </div>
+        <div style="margin-top:10px">
+          <label for="phone">Phone number</label>
+          <input id="phone" name="phone" placeholder="e.g. 9123456789" pattern="[0-9]{10}" required />
+        </div>
+
+        <div style="margin-top:10px">
+          <label for="address">Delivery address</label>
+          <textarea id="address" name="address" placeholder="Street, City, PIN" rows="2" required></textarea>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>Payment method</label>
+          <select id="payment" name="payment" onchange="toggleCOD(this.value)">
+            <option value="cod">Cash on Delivery (COD)</option>
+            <option value="prepaid">Prepaid / Online (customer pay later)</option>
+          </select>
+        </div>
+
+        <div id="codNote" style="margin-top:10px" class="small">
+          Cash on Delivery selected. Collector will accept cash at delivery.
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px;align-items:center;justify-content:space-between">
+          <span class="note">We will open WhatsApp to confirm your order.</span>
+          <div>
+            <button type="button" class="btn btn-outline" onclick="closeAll()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Place Order</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    © Good Star Enterprises — Built with simple web tools.
+  </footer>
+
+  <script>
+    // simple products map (must match data-* attributes on product cards)
+    const products = {
+      'p1': { id:'p1', name:'Priya Style Heater RET-450', price:599 },
+      'p2': { id:'p2', name:'Good Star Classic Heater RET-525', price:899 }
+    };
+
+    // cart in localStorage
+    let cart = JSON.parse(localStorage.getItem('gs_cart') || '{}');
+
+    function saveCart(){ localStorage.setItem('gs_cart', JSON.stringify(cart)); updateCartUI(); }
+
+    function addToCart(id){
+      if(!products[id]) return alert('Product not found');
+      cart[id] = (cart[id] || 0) + 1;
+      saveCart();
+      toast('Added to cart');
+    }
+
+    function removeFromCart(id){
+      delete cart[id];
+      saveCart();
+    }
+
+    function changeQty(id, q){
+      if(q<=0) removeFromCart(id);
+      else cart[id] = q;
+      saveCart();
+    }
+
+    function clearCart(){
+      if(confirm('Clear cart?')) { cart = {}; saveCart(); closeAll(); }
+    }
+
+    function updateCartUI(){
+      const list = document.getElementById('cartList');
+      list.innerHTML = '';
+      let total = 0, items=0;
+      for(const id in cart){
+        const qty = cart[id];
+        const p = products[id];
+        if(!p) continue;
+        const li = document.createElement('li');
+        li.className = 'cart-item';
+        li.innerHTML = `<div>
+            <div style="font-weight:600">${p.name}</div>
+            <div class="small">Rs ${p.price} × ${qty}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="margin-bottom:8px">Rs ${p.price*qty}</div>
+            <div>
+              <button class="btn btn-outline" onclick="changeQty('${id}', ${Math.max(0, qty-1)})">-</button>
+              <button class="btn btn-outline" onclick="changeQty('${id}', ${qty+1})">+</button>
+              <button class="btn btn-outline" onclick="removeFromCart('${id}')">Remove</button>
+            </div>
+          </div>`;
+        list.appendChild(li);
+        total += p.price * qty;
+        items += qty;
+      }
+      if(items===0){
+        list.innerHTML = '<li class="small">Cart is empty</li>';
+        document.getElementById('checkoutBtn').disabled = true;
+      } else {
+        document.getElementById('checkoutBtn').disabled = false;
+      }
+      document.getElementById('totalPrice').textContent = 'Total: Rs ' + total;
+      // also fill cart modal summary
+      const cartDetails = document.getElementById('cartDetails');
+      if(cartDetails) {
+        if(items===0) cartDetails.innerHTML = '<div class="small">No items</div>';
+        else {
+          let html = '<ul style="padding:0;margin:0;list-style:none">';
+          for(const id in cart){
+            const p = products[id];
+            if(!p) continue;
+            html += `<li style="padding:8px 0;border-bottom:1px solid #eee"><strong>${p.name}</strong><div class="small">Rs ${p.price} × ${cart[id]}</div></li>`;
+          }
+          html += '</ul>';
+          cartDetails.innerHTML = html;
+        }
+      }
+      const cartSummary = document.getElementById('cartSummary');
+      if(cartSummary) cartSummary.textContent = items ? `${items} items — Rs ${total}` : 'No items';
+    }
+
+    // modal controls
+    function openCart(){ document.getElementById('modalCart').style.display='flex'; }
+    function openCheckout(){ document.getElementById('modalCheckout').style.display='flex'; }
+    function closeAll(){
+      document.getElementById('modalCart').style.display='none';
+      document.getElementById('modalCheckout').style.display='none';
+    }
+    function closeModal(e){
+      if(e.target.classList.contains('modal-bg')) closeAll();
+    }
+
+    function toggleCOD(val){
+      document.getElementById('codNote').style.display = (val==='cod') ? 'block' : 'none';
+    }
+
+    // place order (opens WhatsApp with order message)
+    function submitOrder(e){
+      e.preventDefault();
+      if(Object.keys(cart).length===0){
+        alert('Cart is empty');
+        return;
+      }
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const payment = document.getElementById('payment').value;
+
+      if(!name || !phone || !address){ alert('Please fill all fields'); return; }
+
+      let total = 0;
+      let msg = `New order from ${name}%0APhone:%20${phone}%0AAddress:%20${encodeURIComponent(address)}%0A%0AItems:%0A`;
+      for(const id in cart){
+        const p = products[id];
+        const qty = cart[id];
+        msg += `- ${p.name} x${qty} = Rs ${p.price*qty}%0A`;
+        total += p.price*qty;
+      }
+      msg += `%0ATotal: Rs ${total}%0APayment: ${payment==='cod'?'Cash%20on%20Delivery':'Prepaid'}%0A%0AThanks!`;
+      // your business WhatsApp number (use no + and country code without plus)
+      const businessNumber = '917210558***'; // <-- replace *** with real digits
+      const waLink = `https://wa.me/${businessNumber}?text=${msg}`;
+      // open WhatsApp in new tab
+      window.open(waLink, '_blank');
+      // optionally clear cart after order
+      cart = {}; saveCart();
+      closeAll();
+      alert('Order initiated on WhatsApp. Please confirm the message and send.');
+    }
+
+    // little toast
+    function toast(txt){
+      const d = document.createElement('div');
+      d.style.position='fixed';d.style.right='20px';d.style.bottom='20px';
+      d.style.background='rgba(0,0,0,0.8)';d.style.color='#fff';d.style.padding='10px 14px';d.style.borderRadius='8px';
+      d.style.zIndex=9999;d.textContent=txt;
+      document.body.appendChild(d);
+      setTimeout(()=>d.remove(),1800);
+    }
+
+    // initial load
+    updateCartUI();
+
+    // Expose in console for debug
+    window._gs = { cart, products, addToCart, removeFromCart, changeQty };
+  </script>
+</body>
+</html>
