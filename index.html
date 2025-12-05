@@ -1,4 +1,7 @@
-<!doctype html>
+        <div style="display:flex;gap:8px">
+          <button id="addProductBtn" class="btn btn-primary">Add / Update</button>
+          <button id="clearProducts" class="btn" style="background:#eee">Clear All</button>
+        </div><!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -109,10 +112,7 @@
         <div class="form-row">
           <textarea id="pDesc" placeholder="Short description" rows="2"></textarea>
         </div>
-        <div style="display:flex;gap:8px">
-          <button id="addProductBtn" class="btn btn-primary">Add / Update</button>
-          <button id="clearProducts" class="btn" style="background:#eee">Clear All</button>
-        </div>
+
         <div style="margin-top:12px">
           <strong>Store settings</strong>
           <div class="note">WhatsApp number for orders (use +91... format)</div>
@@ -361,7 +361,8 @@ function sendWhatsAppOrder(order){
   if(order.cod) msg += `%0APayment: Cash on Delivery%0A`;
   const wa = `https://wa.me/${phone.replace('+','')}?text=${msg}`;
   window.open(wa,'_blank');
-}
+}/* ADMIN PASSWORD */
+let ADMIN_PASS = localStorage.getItem('admin_pass') || "1234";
 
 /* ======= ADMIN ======= */
 const adminToggle = document.getElementById('adminToggle');
