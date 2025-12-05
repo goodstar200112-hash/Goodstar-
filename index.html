@@ -1,419 +1,4 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Good Star Enterprises</title>
-<style>
-  :root{
-    --brand:#007bff;
-    --accent:#25D366;
-    --card:#fff;
-    --bg:#f5f5f7;
-    --muted:#6b7280;
-    --maxw:980px;
-    --radius:10px;
-    font-family: Inter, system-ui, -apple-system, Arial, sans-serif;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:#111}
-  header{background:linear-gradient(90deg, var(--brand), #005bb5); color:#fff; padding:18px 16px; text-align:center}
-  header h1{margin:0;font-size:20px}
-  header p{margin:6px 0 0;font-size:13px;opacity:.95}
-  .wrap{max-width:var(--maxw);margin:18px auto;padding:12px}
-  .topbar{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-bottom:12px}
-  .btn{display:inline-block;padding:8px 12px;border:0;border-radius:8px;background:#e6e6e6;cursor:pointer}
-  .btn.primary{background:var(--brand);color:#fff}
-  .btn.wh{background:var(--accent);color:#fff}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-  .card{background:var(--card);padding:12px;border-radius:var(--radius);box-shadow:0 6px 18px rgba(0,0,0,.06)}
-  .card img{width:100%;border-radius:8px;height:160px;object-fit:cover}
-  h2{margin:6px 0 12px}
-  .product h3{margin:8px 0 4px;font-size:16px}
-  .price{color:var(--muted);margin-top:6px;font-weight:600}
-  .actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-  .cart-btn{position:fixed;right:18px;bottom:18px;background:var(--brand);color:#fff;padding:12px;border-radius:50px;box-shadow:0 10px 30px rgba(0,0,0,.12);cursor:pointer}
-  .cart-panel{position:fixed;right:18px;bottom:80px;width:360px;max-width:92vw;z-index:50}
-  .cart-box{background:var(--card);border-radius:10px;padding:12px;box-shadow:0 8px 20px rgba(0,0,0,.12)}
-  .cart-item{display:flex;gap:8px;align-items:center;margin-bottom:8px}
-  .cart-item img{width:56px;height:44px;object-fit:cover;border-radius:6px}
-  .qty{display:flex;gap:6px;align-items:center}
-  .admin-toggle{font-size:13px}
-  form input, form textarea, .field{width:100%;padding:8px;border:1px solid #e3e6ea;border-radius:8px}
-  .admin-panel{position:fixed;left:18px;bottom:18px;width:360px;max-width:92vw;z-index:50}
-  .small{font-size:13px;color:var(--muted)}
-  footer{padding:14px;text-align:center;font-size:13px;color:var(--muted);margin-top:20px}
-  @media(max-width:600px){ .cart-panel,.admin-panel{width:94vw;left:50%;transform:translateX(-50%);right:auto} }
-  .link{color:var(--brand);text-decoration:none}
-  .row{display:flex;gap:8px;align-items:center}
-  .exportarea{white-space:pre-wrap;font-family:monospace;font-size:12px;background:#f3f4f6;padding:8px;border-radius:6px;max-height:220px;overflow:auto}
-</style>
-</head>
-<body>
-<header>
-  <h1>Good Star Enterprises</h1>
-  <p>Room Heaters | Fast Delivery | Best Price</p>
-</header>
-
-<div class="wrap">
-  <div class="topbar">
-    <div>
-      <h2>Products</h2>
-      <div class="small">Add to cart and checkout via WhatsApp (COD supported)</div>
-    </div>
-    <div class="row">
-      <button class="btn" id="openAdminBtn">Admin</button>
-      <button class="btn" id="viewExportBtn">Export</button>
-      <button class="btn primary" id="clearProductsBtn">Reset demo</button>
-    </div>
-  </div>
-
-  <div id="productsGrid" class="grid"></div>
-</div>
-
-<button class="cart-btn" id="openCartBtn">Cart (<span id="cartCount">0</span>)</button>
-
-<!-- Cart Panel -->
-<div class="cart-panel" id="cartPanel" style="display:none">
-  <div class="cart-box">
-    <h3>Cart</h3>
-    <div id="cartList"></div>
-    <div style="margin-top:8px" class="small">Total: <b id="cartTotal">₹0</b></div>
-    <div style="margin-top:8px" class="row">
-      <button class="btn primary" id="checkoutBtn">Checkout</button>
-      <button class="btn" id="closeCartBtn">Close</button>
-    </div>
-  </div>
-</div>
-
-<!-- Admin Panel -->
-<div class="admin-panel" id="adminPanel" style="display:none">
-  <div class="cart-box">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <h3>Admin — Products</h3>
-      <button class="btn" id="closeAdminBtn">X</button>
-    </div>
-
-    <div id="adminLogin" style="margin-top:8px">
-      <div class="small">Enter admin password to manage products</div>
-      <input id="adminPass" placeholder="Password" style="margin-top:6px" />
-      <div style="margin-top:8px" class="row"><button class="btn primary" id="adminLoginBtn">Sign in</button></div>
-      <div class="small" style="margin-top:6px;color:var(--muted)">Default demo password: <b>admin123</b></div>
-    </div>
-
-    <div id="adminUI" style="display:none">
-      <h4 style="margin:8px 0">Add / Edit Product</h4>
-      <input id="pTitle" placeholder="Title" class="field" />
-      <input id="pPrice" placeholder="Price (numbers only)" class="field" style="margin-top:6px"/>
-      <input id="pImage" placeholder="Image URL (upload to imgBB or GitHub raw)" class="field" style="margin-top:6px"/>
-      <textarea id="pDesc" placeholder="Short description" class="field" style="margin-top:6px" rows="3"></textarea>
-      <div style="margin-top:8px" class="row">
-        <button class="btn primary" id="saveProductBtn">Save Product</button>
-        <button class="btn" id="cancelEditBtn">Cancel</button>
-      </div>
-
-      <hr style="margin:12px 0" />
-      <div class="small">Existing products</div>
-      <div id="adminList" style="margin-top:8px;max-height:220px;overflow:auto"></div>
-
-      <hr style="margin:12px 0" />
-      <div>
-        <div class="small">Export / Import products JSON (backup)</div>
-        <div style="margin-top:8px" class="row">
-          <button class="btn" id="exportBtn">Export</button>
-          <button class="btn" id="importBtn">Import</button>
-        </div>
-        <div id="importArea" style="display:none;margin-top:8px">
-          <textarea id="importInput" rows="5" class="field" placeholder='Paste products JSON here'></textarea>
-          <div style="margin-top:8px" class="row"><button class="btn primary" id="doImportBtn">Import JSON</button></div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- Checkout Modal (simple) -->
-<div id="checkoutModal" style="display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:80;">
-  <div class="cart-box" style="width:420px;max-width:95vw">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <h3>Checkout</h3>
-      <button class="btn" id="closeCheckoutBtn">X</button>
-    </div>
-    <div class="small">Fill customer details</div>
-    <input id="custName" class="field" placeholder="Full name" style="margin-top:8px"/>
-    <input id="custPhone" class="field" placeholder="Mobile number (10 digits)" style="margin-top:8px"/>
-    <textarea id="custAddress" class="field" rows="3" placeholder="Delivery address" style="margin-top:8px"></textarea>
-    <div style="margin-top:8px" class="small">Payment</div>
-    <select id="paymentMethod" class="field" style="margin-top:6px">
-      <option value="COD">Cash on Delivery (COD)</option>
-      <option value="Prepaid">Prepaid (customer will contact)</option>
-    </select>
-    <div style="margin-top:10px" class="row">
-      <button class="btn primary" id="placeOrderBtn">Place order (via WhatsApp)</button>
-      <button class="btn" id="closeCheckoutBtn2">Cancel</button>
-    </div>
-    <div class="small" style="margin-top:8px">You can also copy exported order or save to your system.</div>
-  </div>
-</div>
-
-<footer>Built for Good Star Enterprises — edit products via Admin panel</footer>
-
-<script>
-/* ====== Configuration ====== */
-/* Change only the number here if needed (country code + number, no plus)
-   For India: 91 + 10-digit mobile (example below uses your number) */
-const WHATSAPP_NUMBER = '917210558926'; // ← change if needed
-const ADMIN_PASSWORD = 'admin123'; // change admin password here
-
-/* ====== Demo default products (used if no products in localStorage) ====== */
-const defaultProducts = [
-  { id: 'p1', title: 'Priya Style Heater RET-450', price: 599, image: 'https://via.placeholder.com/600x300?text=RET-450', desc: 'Efficient heater, lightweight & fast heat' },
-  { id: 'p2', title: 'Good Star Classic Heater RET-525', price: 899, image: 'https://via.placeholder.com/600x300?text=RET-525', desc: 'Durable classic model with safety features' }
-];
-
-/* ====== Helpers ====== */
-function $(id){return document.getElementById(id)}
-function money(v){return '₹' + parseFloat(v).toLocaleString('en-IN')}
-
-/* ====== Products storage ====== */
-function loadProducts(){
-  const raw = localStorage.getItem('gs_products');
-  try{
-    const arr = raw ? JSON.parse(raw) : null;
-    if(!arr || !Array.isArray(arr) || arr.length===0){
-      localStorage.setItem('gs_products', JSON.stringify(defaultProducts));
-      return defaultProducts;
-    }
-    return arr;
-  }catch(e){
-    localStorage.setItem('gs_products', JSON.stringify(defaultProducts));
-    return defaultProducts;
-  }
-}
-function saveProducts(arr){ localStorage.setItem('gs_products', JSON.stringify(arr)); renderProducts(); renderAdminList(); }
-
-/* ====== Cart storage ====== */
-function loadCart(){ return JSON.parse(localStorage.getItem('gs_cart')||'{}') }
-function saveCart(cart){ localStorage.setItem('gs_cart', JSON.stringify(cart)); updateCartUI(); }
-
-/* ====== Render products grid ====== */
-function renderProducts(){
-  const products = loadProducts();
-  const el = $('productsGrid'); el.innerHTML='';
-  products.forEach(p=>{
-    const card = document.createElement('div'); card.className='card product';
-    card.innerHTML = `
-      <img src="${escapeHtml(p.image||'')}" alt="${escapeHtml(p.title)}" />
-      <h3>${escapeHtml(p.title)}</h3>
-      <div class="small">${escapeHtml(p.desc||'')}</div>
-      <div class="price">${money(p.price)}</div>
-      <div class="actions">
-        <button class="btn" onclick="addToCart('${p.id}')">Add to cart</button>
-        <a class="btn wh" href="${whatsAppLinkSingle(p)}" target="_blank">Order (WhatsApp)</a>
-      </div>
-    `;
-    el.appendChild(card);
-  });
-}
-
-/* Create a direct WhatsApp order for single product (quick order) */
-function whatsAppLinkSingle(p){
-  const msg = encodeURIComponent(`Hello Good Star Enterprises,%0AI want to order:%0A- ${p.title} (₹${p.price})%0APlease confirm availability and delivery.%0AThanks`);
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
-}
-
-/* ====== Cart handling ====== */
-function addToCart(id){
-  const products = loadProducts();
-  const prod = products.find(x=>x.id===id); if(!prod) return alert('Product missing');
-  const cart = loadCart();
-  if(cart[id]) cart[id].qty++;
-  else cart[id] = {id:prod.id, title:prod.title, price:prod.price, image:prod.image, qty:1};
-  saveCart(cart);
-  toast('Added to cart');
-}
-function updateCartUI(){
-  const cart = loadCart();
-  const list = $('cartList'); list.innerHTML='';
-  let total=0, count=0;
-  Object.values(cart).forEach(item=>{
-    const div = document.createElement('div'); div.className='cart-item';
-    div.innerHTML = `<img src="${escapeHtml(item.image)}" alt="">
-      <div style="flex:1">
-        <div style="font-weight:600">${escapeHtml(item.title)}</div>
-        <div class="small">${money(item.price)} • Qty: <span>${item.qty}</span></div>
-      </div>
-      <div class="qty">
-        <button class="btn" onclick="decQty('${item.id}')">-</button>
-        <button class="btn" onclick="incQty('${item.id}')">+</button>
-        <button class="btn" onclick="removeItem('${item.id}')">Del</button>
-      </div>`;
-    list.appendChild(div);
-    total += item.price * item.qty;
-    count += item.qty;
-  });
-  $('cartTotal').innerText = money(total);
-  $('cartCount').innerText = count;
-}
-function incQty(id){ const cart=loadCart(); if(cart[id]){cart[id].qty++; saveCart(cart);} }
-function decQty(id){ const cart=loadCart(); if(cart[id]){cart[id].qty = Math.max(0, cart[id].qty-1); if(cart[id].qty===0) delete cart[id]; saveCart(cart);} }
-function removeItem(id){ const cart=loadCart(); if(cart[id]){delete cart[id]; saveCart(cart);} }
-function clearCart(){ localStorage.removeItem('gs_cart'); updateCartUI(); }
-
-/* ====== Checkout & WhatsApp order message ====== */
-function openCheckout(){
-  const cart = loadCart(); if(Object.keys(cart).length===0){ alert('Cart is empty'); return; }
-  $('checkoutModal').style.display='block';
-}
-function closeCheckout(){ $('checkoutModal').style.display='none'; }
-function placeOrder(){
-  const name = $('custName').value.trim();
-  const phone = $('custPhone').value.trim();
-  const address = $('custAddress').value.trim();
-  const method = $('paymentMethod').value;
-  if(!name || !phone || !address){ alert('Please fill name, phone and address'); return; }
-  const cart = loadCart();
-  let total=0; let lines=[];
-  Object.values(cart).forEach(it=>{ lines.push(`${it.title} x ${it.qty} = ₹${it.price*it.qty}`); total += it.price*it.qty; });
-  const summary = lines.join('%0A');
-  const note = encodeURIComponent(`New order from website%0AName: ${name}%0APhone: ${phone}%0AAddress: ${address}%0A%0AItems:%0A${decodeURIComponent(summary)}%0A%0ATotal: ₹${total}%0APayment: ${method}%0A%0APls confirm.`);
-  const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${note}`;
-  // open whatsapp
-  window.open(waLink, '_blank');
-  // optionally clear cart after ordering:
-  clearCart(); closeCheckout();
-  toast('WhatsApp order page opened');
-}
-
-/* ====== Admin functions ====== */
-let editingId = null;
-function showAdmin(){
-  $('adminPanel').style.display='block';
-}
-function hideAdmin(){ $('adminPanel').style.display='none'; }
-function adminLogin(){
-  const pass = $('adminPass').value;
-  if(pass === ADMIN_PASSWORD){
-    $('adminLogin').style.display='none';
-    $('adminUI').style.display='block';
-    renderAdminList();
-  } else alert('Wrong password');
-}
-function renderAdminList(){
-  const products = loadProducts();
-  const list = $('adminList'); list.innerHTML='';
-  products.forEach(p=>{
-    const div = document.createElement('div'); div.style.marginBottom='8px';
-    div.innerHTML = `<div style="display:flex;gap:8px;align-items:center">
-      <img src="${escapeHtml(p.image)}" style="width:56px;height:44px;object-fit:cover;border-radius:6px" />
-      <div style="flex:1">
-        <div style="font-weight:600">${escapeHtml(p.title)}</div>
-        <div class="small">₹${p.price}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <button class="btn" onclick="editProduct('${p.id}')">Edit</button>
-        <button class="btn" onclick="deleteProduct('${p.id}')">Delete</button>
-      </div>
-    </div>`;
-    list.appendChild(div);
-  });
-}
-function saveProduct(){
-  const title = $('pTitle').value.trim();
-  const price = parseFloat($('pPrice').value.trim()||0);
-  const image = $('pImage').value.trim();
-  const desc = $('pDesc').value.trim();
-  if(!title || !price || !image){ alert('Title, price and image are required'); return; }
-  const products = loadProducts();
-  if(editingId){
-    const idx = products.findIndex(x=>x.id===editingId);
-    if(idx>=0){
-      products[idx] = { id: editingId, title, price, image, desc };
-    }
-    editingId = null;
-  } else {
-    const id = 'p'+Date.now();
-    products.push({ id, title, price, image, desc });
-  }
-  saveProducts(products);
-  $('pTitle').value=''; $('pPrice').value=''; $('pImage').value=''; $('pDesc').value='';
-  renderProducts();
-  renderAdminList();
-}
-function editProduct(id){
-  const products = loadProducts();
-  const p = products.find(x=>x.id===id); if(!p) return;
-  editingId = id;
-  $('pTitle').value = p.title; $('pPrice').value = p.price; $('pImage').value = p.image; $('pDesc').value = p.desc;
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function deleteProduct(id){
-  if(!confirm('Delete this product?')) return;
-  let products = loadProducts();
-  products = products.filter(p=>p.id!==id);
-  saveProducts(products);
-  renderProducts();
-}
-
-/* Export / import */
-function exportProducts(){
-  const products = loadProducts();
-  const json = JSON.stringify(products, null, 2);
-  prompt('Copy below products JSON (use Import on other device):', json);
-}
-function showImport(){
-  $('importArea').style.display = $('importArea').style.display==='none'?'block':'none';
-}
-function doImport(){
-  try{
-    const txt = $('importInput').value.trim();
-    if(!txt) return alert('Paste JSON first');
-    const arr = JSON.parse(txt);
-    if(!Array.isArray(arr)) throw 'Invalid';
-    saveProducts(arr);
-    $('importInput').value='';
-    $('importArea').style.display='none';
-    alert('Imported');
-  }catch(e){ alert('Invalid JSON') }
-}
-
-/* Reset demo */
-function resetDemo(){
-  if(!confirm('Reset to demo products? This will replace your current products.')) return;
-  localStorage.setItem('gs_products', JSON.stringify(defaultProducts));
-  renderProducts(); renderAdminList();
-}
-
-/* Utilities */
-function escapeHtml(s){ if(!s) return ''; return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-function toast(msg){ console.log(msg); alert(msg); }
-
-/* UI event wiring */
-document.addEventListener('DOMContentLoaded', ()=>{
-  renderProducts();
-  updateCartUI();
-
-  $('openCartBtn').addEventListener('click', ()=>{ $('cartPanel').style.display='block'; });
-  $('closeCartBtn').addEventListener('click', ()=>{ $('cartPanel').style.display='none'; });
-  $('checkoutBtn').addEventListener('click', ()=>{ openCheckout(); });
-  $('openAdminBtn').addEventListener('click', showAdmin);
-  $('closeAdminBtn').addEventListener('click', hideAdmin);
-  $('adminLoginBtn').addEventListener('click', adminLogin);
-  $('saveProductBtn').addEventListener('click', saveProduct);
-  $('cancelEditBtn').addEventListener('click', ()=>{ editingId=null; $('pTitle').value=''; $('pPrice').value=''; $('pImage').value=''; $('pDesc').value=''; });
-  $('exportBtn').addEventListener('click', exportProducts);
-  $('importBtn').addEventListener('click', showImport);
-  $('doImportBtn').addEventListener('click', doImport);
-  $('clearProductsBtn').addEventListener('click', resetDemo);
-
-  $('viewExportBtn').addEventListener('click', ()=>{ exportProducts(); });
-
-  $('closeCheckoutBtn').addEventListener('click', closeCheckout);
-  $('closeCheckoutBtn2').addEventListener('click', closeCheckout);
-  $('placeOrderBtn').addEventListener('click', placeOrder);
-
-  // keyboard convenience: Esc to close modals
+       
   document.addEventListener('keydown', (e)=>{
     if(e.key==='Escape'){ $('cartPanel').style.display='none'; $('adminPanel').style.display='none'; closeCheckout(); }
   });
@@ -426,3 +11,233 @@ if(!localStorage.getItem('gs_products')) localStorage.setItem('gs_products', JSO
 </body>
 </html>
       
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Good Star Enterprises</title>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<style>
+  :root{
+    --brand:#007bff; --accent:#25D366; --card:#ffffff; --bg:#f5f7fa;
+    --muted:#6b7280; --radius:10px; --maxw:980px; --gap:14px;
+    font-family: Inter, system-ui, -apple-system, Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:#111}
+  header{background:linear-gradient(90deg,var(--brand),#005bb5);color:#fff;padding:18px 12px}
+  .wrap{max-width:var(--maxw);margin:18px auto;padding:0 12px}
+  header h1{margin:0;font-size:20px;letter-spacing:0.2px}
+  header p{margin:6px 0 0;font-size:13px;opacity:.95}
+  .topbar{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:12px}
+  .btn{display:inline-block;padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
+  .btn-primary{background:var(--brand);color:#fff}
+  .btn-outline{background:transparent;border:1px solid rgba(0,0,0,0.08)}
+  .layout{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:16px}
+  @media(max-width:880px){ .layout{grid-template-columns:1fr;}.cart-box{position:relative;top:0;margin-top:12px}}
+  .card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+  .products{display:flex;flex-direction:column;gap:12px}
+  .product{display:flex;gap:12px;align-items:flex-start}
+  .product img{width:120px;height:80px;object-fit:cover;border-radius:8px}
+  .product .info{flex:1}
+  .product h3{margin:0;font-size:16px}
+  .price{color:var(--muted);margin-top:6px;font-weight:600}
+  .actions{margin-top:10px;display:flex;gap:8px;align-items:center}
+  .cart-box{position:sticky;top:20px}
+  .cart-list{list-style:none;padding:0;margin:0;max-height:420px;overflow:auto}
+  .cart-item{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px dashed rgba(0,0,0,0.04)}
+  .cart-item span{font-size:14px}
+  .qty{display:inline-flex;align-items:center;gap:6px}
+  input[type="number"], input[type="text"], textarea{width:100%;padding:8px;border-radius:6px;border:1px solid rgba(0,0,0,0.08)}
+  form .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  @media(max-width:600px){form .row{grid-template-columns:1fr}}
+  footer{padding:18px;text-align:center;color:var(--muted)}
+  .small{font-size:13px;color:var(--muted)}
+  .badge{background:#e9f5ff;color:var(--brand);padding:6px 8px;border-radius:999px;font-weight:600}
+  .empty{padding:24px;text-align:center;color:var(--muted)}
+  .order-list{margin-top:12px}
+  .product-actions a{display:inline-block;padding:8px 10px;border-radius:6px;text-decoration:none;color:#fff;margin-right:8px}
+  .wa{background:var(--accent)}
+  .cod{background:#333}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Good Star Enterprises <span class="badge">Shop</span></h1>
+    <p>Room Heaters | Fast Delivery | Best Price</p>
+    <div class="topbar">
+      <div class="small">Add products by editing the file (see instructions).</div>
+      <div>
+        <button class="btn btn-outline" id="btn-refresh">Refresh</button>
+        <button class="btn btn-primary" id="open-cart">Cart (<span id="cart-count">0</span>)</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="layout">
+    <div>
+      <div class="card">
+        <h2 style="margin:0 0 12px">Products</h2>
+        <div id="products" class="products">
+          <!-- products rendered here -->
+        </div>
+        <div class="small" style="margin-top:8px">Tip: To add images or products edit the top-level PRODUCTS array inside the index.html on GitHub.</div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h3 style="margin:0 0 8px">Orders (saved locally)</h3>
+        <div id="orders" class="order-list small"></div>
+      </div>
+    </div>
+      <div class="product card" data-id="${p.id}">
+        <img src="${p.image}" alt="${p.title}">
+        <div class="info">
+          <h3>${p.title}</h3>
+          <div class="small">${p.desc||""}</div>
+          <div class="price">Price: <strong>₹${p.price}</strong></div>
+          <div class="actions product-actions">
+            <button class="btn btn-outline" onclick="addToCart('${p.id}')">Add to Cart</button>
+            <a class="product-actions wa" href="${waLink(p)}" target="_blank">Order via WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    `);
+  }
+  $id("products").innerHTML = out.join("");
+}
+
+function waLink(product){
+  const p = PRODUCTS.find(x=>x.id===product);
+  if(!p) return "#";
+  const text = encodeURIComponent(`Hello, I want to order *${p.title}* (₹${p.price}). Please assist. - Good Star`);
+  return `https://wa.me/${(STORE_PHONE||"").replace(/\D/g,"")}?text=${text}`;
+}
+
+function addToCart(id){
+  if(!cart[id]) cart[id]=0;
+  cart[id]+=1;
+
+  saveCart();
+}
+
+function clearCart(){
+  cart={}; saveCart();
+  showToast("Cart cleared");
+}
+
+function openCheckout(){
+  if(Object.keys(cart).length===0){ showToast("Cart is empty"); return; }
+  $id("checkout-modal").style.display="flex";
+  $id("store-phone-display").textContent = STORE_PHONE || "(not configured)";
+}
+
+function closeCheckout(){
+  $id("checkout-modal").style.display="none";
+}
+
+function collectOrderData(){
+  const name = $id("cust-name").value.trim();
+  const phone = $id("cust-phone").value.trim();
+  const addr = $id("cust-address").value.trim();
+  const payCOD = $id("pay-cod").checked;
+  if(!name || !phone || !addr){ $id("checkout-msg").textContent="Please fill name, phone & address."; return null; }
+  const items = [];
+  let total=0;
+  for(const id in cart){
+    const p = PRODUCTS.find(x=>x.id===id);
+    if(!p) continue;
+    items.push({id:p.id,title:p.title,price:p.price,qty:cart[id]});
+    total += p.price*cart[id];
+  }
+  return {id:"ORD"+Date.now(), name, phone, addr, payMethod: payCOD ? "COD" : "WhatsApp", items, total, created:new Date().toISOString()};
+}
+
+function placeOrder(e){
+  e.preventDefault();
+  const data = collectOrderData();
+  if(!data) return;
+  if(data.payMethod==="WhatsApp"){
+    // open whatsapp with order summary
+    const text = makeOrderText(data);
+    const phoneForWA = (STORE_PHONE||"").replace(/\D/g,"");
+    const waUrl = `https://wa.me/${phoneForWA}?text=${encodeURIComponent(text)}`;
+    window.open(waUrl, "_blank");
+    $id("checkout-msg").textContent = "WhatsApp opened — please send message to complete order.";
+  } else {
+    // save as COD order locally
+    orders.unshift(data);
+    saveOrders();
+    clearCart();
+    $id("checkout-msg").textContent = "Order placed (COD). Saved locally.";
+  }
+  setTimeout(()=>closeCheckout(),800);
+}
+
+function makeOrderText(order){
+  let t = `New order from ${order.name}%0APhone: ${order.phone}%0AAddress: ${order.addr}%0A%0AItems:%0A`;
+  for(const it of order.items) t += `- ${it.title} x${it.qty} = ₹${it.price*it.qty}%0A`;
+  t += `%0ATotal: ₹${order.total}%0A%0AThanks!`;
+  return t;
+}
+
+function saveOrderLocally(){
+  const data = collectOrderData();
+  if(!data) return;
+  orders.unshift(data);
+  saveOrders();
+  $id("checkout-msg").textContent = "Order saved locally.";
+  clearCart();
+  setTimeout(()=>closeCheckout(),500);
+}
+
+function renderOrders(){
+  const el = $id("orders"); el.innerHTML="";
+  if(orders.length===0){ el.innerHTML = "<div class='small'>No saved orders</div>"; return; }
+  for(const o of orders){
+    const d = document.createElement("div");
+    d.style.borderBottom="1px dashed rgba(0,0,0,0.06)";
+    d.style.padding="8px 0";
+    d.innerHTML = `<div style="font-weight:600">${o.name} — ₹${o.total}</div>
+      <div class="small">#${o.id} • ${new Date(o.created).toLocaleString()}</div>
+      <div class="small">Items: ${o.items.map(i=>i.title+" x"+i.qty).join(", ")}</div>`;
+    el.appendChild(d);
+  }
+}
+
+/* small utility to show quick message */
+function showToast(msg){ alert(msg); }
+
+/* bind events */
+$id("btn-refresh").addEventListener("click", ()=>{ location.reload(); });
+$id("open-cart").addEventListener("click", ()=>{ window.scrollTo({top:0,behavior:"smooth"}); });
+$id("clear-cart").addEventListener("click", ()=>{ if(confirm("Clear cart?")) clearCart(); });
+$id("checkout-btn").addEventListener("click", openCheckout);
+$id("close-checkout").addEventListener("click", closeCheckout);
+$id("checkout-form").addEventListener("submit", placeOrder);
+$id("save-order").addEventListener("click", saveOrderLocally);
+
+/* init */
+function init(){
+  // Replace placeholder STORE_PHONE if user hasn't set
+  if(STORE_PHONE.includes("REPLACE_ME")){
+    // no-op; just display message
+    console.warn("Set STORE_PHONE variable at top of file to enable WhatsApp order links.");
+  }
+  renderProducts();
+  renderCart();
+  renderOrders();
+}
+init();
+
+/* Expose some functions globally for inline onclick handlers */
+window.addToCart = addToCart;
+window.changeQty = changeQty;
+window.removeItem = removeItem;
+window.waLink = waLink;
+</script>
+</body>
+</html>
