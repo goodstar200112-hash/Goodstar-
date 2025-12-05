@@ -1,468 +1,494 @@
-        <div style="display:flex;gap:8px">
-          <button id="addProductBtn" class="btn btn-primary">Add / Update</button>
-          <button id="clearProducts" class="btn" style="background:#eee">Clear All</button>
-        </div><!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Good Star Enterprises</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --brand:#007bff; --accent:#25D366; --card:#ffffff; --muted:#6b7280;
-    --bg:#f5f5f7; --radius:10px; --maxw:1100px;
-  }
-  *{box-sizing:border-box}
-  body{font-family:Inter,system-ui,Arial; margin:0; background:var(--bg); color:#111;}
-  header{background:linear-gradient(90deg,var(--brand),#005bb5); color:#fff; padding:18px 20px}
-  .wrap{max-width:var(--maxw); margin:20px auto; padding:0 16px}
-  header .brand{font-size:20px; font-weight:700}
-  header p{margin:6px 0 0;font-size:13px;opacity:.9}
-  .topbar{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:12px}
-  .btn{display:inline-block;padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
-  .btn-primary{background:var(--brand); color:#fff}
-  .btn-accent{background:var(--accent); color:#fff}
-  .grid{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
-  @media(max-width:880px){.grid{grid-template-columns:1fr}}
-  .card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
-  .products{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
-  .product{display:flex;gap:12px;padding:10px;border-radius:8px;align-items:center}
-  .product img{width:120px;height:80px;object-fit:cover;border-radius:6px}
-  .product .info{flex:1}
-  .product h3{margin:0;font-size:16px}
-  .price{color:var(--muted);margin-top:6px;font-weight:600}
-  .actions{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
-  .cart-box{position:sticky;top:20px}
-  .cart-list{list-style:none;padding:0;margin:0}
-  .cart-item{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
-  .small{font-size:13px;color:var(--muted)}
-  .qty{width:40px}
-  footer{padding:30px 0;text-align:center;color:#666}
-  /* admin form */
-  .admin-panel{margin-top:12px;display:none}
-  .form-row{display:flex;gap:8px;margin-bottom:8px}
-  .form-row input,.form-row textarea{flex:1;padding:8px;border-radius:8px;border:1px solid #ddd}
-  .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);padding:20px;z-index:999}
-  .modal .card{max-width:520px;width:100%}
-  .close-x{float:right;cursor:pointer;color:#666}
-  .note{font-size:13px;color:#666;margin-top:6px}
-  .order-row{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #eee}
-  .muted{color:var(--muted)}
-  .input{padding:8px;border-radius:8px;border:1px solid #ddd;width:100%}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Good Star Enterprises</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --brand:#007bff;
+      --accent:#25D366;
+      --card:#ffffff;
+      --bg:#f5f5f7;
+      --muted:#6b7280;
+      --radius:10px;
+      --maxw:1100px;
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,Arial;margin:0;background:var(--bg);color:#111}
+    header{background:linear-gradient(90deg,var(--brand),#005bb5);color:#fff;padding:22px 0}
+    .wrap{max-width:var(--maxw);margin:18px auto;padding:0 14px}
+    header .brand{font-size:20px;font-weight:700}
+    header p{margin:6px 0 0;font-size:13px;opacity:.9}
+    .topbar{display:flex;gap:8px;align-items:center;margin-left:auto}
+    .btn{display:inline-block;padding:8px 12px;border-radius:10px;border:0;cursor:pointer;background:#eee}
+    .btn-primary{background:var(--brand);color:#fff}
+    .btn-accent{background:var(--accent);color:#fff}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
+    @media(max-width:880px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.04)}
+    h2{margin:0 0 8px;font-size:18px}
+    .note{color:var(--muted);font-size:13px;margin-top:6px}
+    .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;margin-top:12px}
+    .product{display:flex;gap:12px;padding:12px;border-radius:10px;background:linear-gradient(#fff,#fcfcfd);align-items:center}
+    .product img{width:120px;height:80px;object-fit:cover;border-radius:8px;background:#f2f3f5}
+    .product .info{flex:1}
+    .product h3{margin:0;font-size:16px}
+    .small{color:var(--muted);font-size:13px;margin-top:6px}
+    .price{color:#222;margin-top:6px;font-weight:700}
+    .actions{margin-top:10px;display:flex;gap:8px;align-items:center}
+    aside{position:relative}
+    .cart-box{position:sticky;top:20px}
+    .cart-list{list-style:none;padding:0;margin:0}
+    .cart-list li{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid #eee;align-items:center}
+    .cart-total{font-weight:700;margin-top:12px}
+    .input{padding:10px;border-radius:8px;border:1px solid #e6e6e9;width:100%}
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:50}
+    .modal .card{max-width:520px;width:100%}
+    .admin-panel{display:none;margin-top:12px}
+    .form-row{display:flex;gap:8px;align-items:center;margin-top:8px}
+    .form-row input, .form-row textarea{flex:1;padding:8px;border-radius:8px;border:1px solid #e6e6e9}
+    footer{max-width:var(--maxw);margin:20px auto;padding:0 14px;color:var(--muted)}
+    .small-muted{color:var(--muted);font-size:13px}
+  </style>
 </head>
 <body>
-<header>
-  <div class="wrap">
-    <div style="display:flex;align-items:center;gap:12px">
+  <header>
+    <div class="wrap" style="display:flex;align-items:center;gap:14px">
       <div>
         <div class="brand">Good Star Enterprises</div>
         <p>Room Heaters | Fast Delivery | Best Price</p>
       </div>
-      <div style="margin-left:auto" class="topbar">
+      <div class="topbar" style="margin-left:auto">
         <button id="adminToggle" class="btn">Admin</button>
-        <a id="visitSite" class="btn btn-primary" href="#" target="_blank" style="text-decoration:none;color:#fff">Open Store</a>
+        <a id="visitSite" class="btn btn-primary" href="#" target="_blank" rel="noopener">Open Store</a>
       </div>
     </div>
-  </div>
-</header>
+  </header>
 
-<main class="wrap">
-  <div class="grid">
-    <!-- left: catalogue -->
-    <div>
-      <div class="card" style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <strong>Products</strong>
-          <div class="note">Add products from Admin - images can be any public image URL</div>
+  <main class="wrap">
+    <div class="grid">
+      <!-- left: catalogue -->
+      <div>
+        <div class="card" style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <strong>Products</strong>
+            <div style="color:var(--muted);font-size:13px">Add products from Admin - images can be any public image URL</div>
+          </div>
+          <div style="margin-top:10px">
+            <input id="search" class="input" placeholder="Search product...">
+          </div>
         </div>
-        <div>
-          <input id="search" class="input" placeholder="Search product..." style="width:220px"/>
+
+        <div id="productsContainer" class="products card" style="padding:12px">
+          <!-- product cards inserted here -->
+        </div>
+
+        <div id="noProducts" style="display:none" class="card" style="margin-top:12px">
+          <div class="small-muted">No products found</div>
         </div>
       </div>
 
-      <div id="productsContainer" class="products"></div>
-
-      <div id="noProducts" style="display:none" class="note card" >No products yet. Open Admin → Add Product.</div>
-    </div>
-
-    <!-- right: cart + admin -->
-    <aside>
-      <div class="card cart-box">
-        <h3 style="margin:0 0 8px 0">Cart</h3>
-        <ul id="cartList" class="cart-list"></ul>
-        <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
-          <div><strong>Total:</strong> <span id="cartTotal">₹0</span></div>
-          <div style="margin-left:auto">
+      <!-- right: cart + admin -->
+      <aside>
+        <div class="card cart-box">
+          <h3 style="margin:0 0 8px 0">Cart</h3>
+          <ul id="cartList" class="cart-list"></ul>
+          <div class="cart-total small-muted">Total: <span id="cartTotal">₹0</span></div>
+          <div style="margin-top:12px">
             <button id="checkoutBtn" class="btn btn-primary">Checkout</button>
           </div>
         </div>
-      </div>
 
-      <div id="adminPanel" class="card admin-panel">
-        <h4 style="margin:0 0 8px 0">Admin - Products</h4>
-        <div class="form-row">
-          <input id="pTitle" placeholder="Product title" />
-          <input id="pPrice" placeholder="Price (₹)" />
-        </div>
-        <div class="form-row">
-          <input id="pImage" placeholder="Image URL (https://...)" />
-        </div>
-        <div class="form-row">
-          <textarea id="pDesc" placeholder="Short description" rows="2"></textarea>
-        </div>
+        <!-- admin panel -->
+        <div id="adminPanel" class="card admin-panel">
+          <h3 style="margin:0 0 8px 0">Admin — Manage Store</h3>
 
-        <div style="margin-top:12px">
-          <strong>Store settings</strong>
-          <div class="note">WhatsApp number for orders (use +91... format)</div>
-          <div class="form-row" style="margin-top:8px">
-            <input id="storePhone" placeholder="+91XXXXXXXXXX" />
-            <button id="saveSettings" class="btn btn-accent">Save</button>
+          <div style="margin-top:8px" id="adminControls">
+            <div class="form-row">
+              <input id="pTitle" placeholder="Product title" />
+              <input id="pPrice" placeholder="Price" />
+            </div>
+            <div class="form-row" style="margin-top:8px">
+              <input id="pImage" placeholder="Image URL (public)" />
+              <input id="pDesc" placeholder="Short description" />
+            </div>
+            <div style="margin-top:8px;display:flex;gap:8px">
+              <button id="addProductBtn" class="btn btn-primary">Save / Add Product</button>
+              <button id="clearProducts" class="btn">Clear all products</button>
+            </div>
+
+            <hr style="margin:12px 0">
+
+            <div>
+              <strong>Store settings</strong>
+              <div class="form-row" style="margin-top:8px">
+                <input id="storePhone" placeholder="Store WhatsApp phone (eg +919999999999)" />
+                <button id="saveSettings" class="btn btn-accent">Save</button>
+              </div>
+              <div style="margin-top:8px" class="small-muted">Store phone is used for WhatsApp orders.</div>
+            </div>
+
+            <hr style="margin:12px 0">
+
+            <div>
+              <strong>Admin password</strong>
+              <div class="form-row" style="margin-top:8px">
+                <input id="adminPass" placeholder="New admin password" />
+                <button id="changePass" class="btn">Change</button>
+              </div>
+              <div class="small-muted" style="margin-top:8px">Default built-in password is <strong>1234</strong> (kept in localStorage).</div>
+            </div>
           </div>
         </div>
 
-        <div style="margin-top:12px">
-          <strong>Admin password</strong>
-          <div class="note">Change default password if needed</div>
-          <div class="form-row">
-            <input id="adminPass" placeholder="New password (leave blank to keep)" />
-            <button id="changePass" class="btn">Change</button>
-          </div>
-        </div>
-
-      </div>
-    </aside>
-  </div>
-</main>
-
-<!-- checkout modal -->
-<div id="checkoutModal" class="modal" style="display:none">
-  <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between">
-      <h3 style="margin:0">Checkout</h3>
-      <span class="close-x" id="closeCheckout">✕</span>
+      </aside>
     </div>
-    <div style="margin-top:8px">
-      <div id="checkoutItems"></div>
-      <div style="margin-top:8px">
-        <label class="small">Name</label>
-        <input id="cname" class="input" placeholder="Customer name"/>
-        <label class="small" style="margin-top:6px">Phone</label>
-        <input id="cphone" class="input" placeholder="+91..." />
-        <label class="small" style="margin-top:6px">Address</label>
-        <textarea id="caddr" class="input" rows="3" placeholder="Delivery address"></textarea>
-        <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-          <label><input type="checkbox" id="codCheck" /> Cash on Delivery</label>
-          <div class="note" style="margin-left:auto">Or click <strong>Order via WhatsApp</strong></div>
-        </div>
+  </main>
 
-        <div style="display:flex;gap:8px;margin-top:10px">
-          <button id="placeOrderBtn" class="btn btn-primary">Place Order (Save)</button>
+  <!-- checkout modal -->
+  <div id="checkoutModal" class="modal">
+    <div class="card">
+      <div style="padding:12px">
+        <h3 style="margin:0 0 8px 0">Checkout</h3>
+        <div id="checkoutItems" style="max-height:280px;overflow:auto;margin-bottom:8px"></div>
+        <div class="form-row" style="margin-top:8px">
+          <input id="cname" placeholder="Customer name" />
+          <input id="cphone" placeholder="Phone" />
+        </div>
+        <div class="form-row" style="margin-top:8px">
+          <input id="caddr" placeholder="Address" />
+          <label style="display:flex;align-items:center;gap:8px"><input id="codCheck" type="checkbox"> Cash on Delivery</label>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
           <button id="whatsappOrder" class="btn btn-accent">Order via WhatsApp</button>
+          <button id="placeOrderBtn" class="btn btn-primary">Place order (save)</button>
+          <button id="closeCheckout" class="btn">Close</button>
         </div>
-        <div class="note" style="margin-top:8px">Orders saved locally in browser (Orders tab for admin coming soon)</div>
       </div>
     </div>
   </div>
-</div>
 
-<footer>
-  <div class="wrap card" style="max-width:var(--maxw)">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+  <!-- small footer -->
+  <footer class="wrap">
+    <div class="card" style="padding:12px;margin-top:18px">
       <div>© Good Star Enterprises</div>
-      <div class="muted">Built with simple HTML/CSS/JS — edit on GitHub to update content</div>
+      <div class="small-muted" style="margin-top:6px">Built with simple HTML/CSS/JS — edit on GitHub to update content</div>
     </div>
-  </div>
-</footer>
+  </footer>
 
-<script>
-/* ========= SETTINGS =========
- - Default phone: change below or via Admin
- - Default admin password: change below or via Admin
-=============================*/
-const DEFAULT_PHONE = "+91REPLACE_ME";
-let STORE_PHONE = localStorage.getItem('store_phone') || DEFAULT_PHONE;
-let ADMIN_PASS = localStorage.getItem('admin_pass') || 'admin123';
+  <script>
+    /* ========= storage helpers ========= */
+    function uid(){ return 'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6) }
+    function loadProducts(){ try{ return JSON.parse(localStorage.getItem('products')||'[]') }catch(e){return []} }
+    function saveProducts(p){ localStorage.setItem('products', JSON.stringify(p)) }
 
-/* ======= PRODUCTS STORAGE ======
- Use localStorage 'products' key. If empty, will seed demo products.
- Each product: {id,title,price,image,desc}
-================================*/
-function uid(){return 'p'+Date.now().toString(36).slice(2,9)}
-const demoProducts = [
-  {id:'p1', title:'Priya Style Heater RET-450', price:599, image:'https://via.placeholder.com/600x300?text=RET-450', desc:'Compact room heater, fast warming.'},
-  {id:'p2', title:'Good Star Classic Heater RET-525', price:899, image:'https://via.placeholder.com/600x300?text=RET-525', desc:'Classic model with safety features.'}
-];
+    /* UI refs */
+    const productsContainer = document.getElementById('productsContainer');
+    const cartList = document.getElementById('cartList');
+    const cartTotalEl = document.getElementById('cartTotal');
+    const searchEl = document.getElementById('search');
+    const adminToggle = document.getElementById('adminToggle');
+    const adminPanel = document.getElementById('adminPanel');
+    const addProductBtn = document.getElementById('addProductBtn');
+    const clearProductsBtn = document.getElementById('clearProducts');
+    const pTitle = document.getElementById('pTitle');
+    const pPrice = document.getElementById('pPrice');
+    const pImage = document.getElementById('pImage');
+    const pDesc = document.getElementById('pDesc');
 
-function loadProducts(){
-  let p = JSON.parse(localStorage.getItem('products') || 'null');
-  if(!p){ p = demoProducts; localStorage.setItem('products', JSON.stringify(p)); }
-  return p;
-}
-function saveProducts(arr){ localStorage.setItem('products', JSON.stringify(arr)); }
+    const checkoutModal = document.getElementById('checkoutModal');
+    const checkoutItems = document.getElementById('checkoutItems');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const closeCheckout = document.getElementById('closeCheckout');
+    const placeOrderBtn = document.getElementById('placeOrderBtn');
+    const whatsappOrder = document.getElementById('whatsappOrder');
 
-/* ===== CART ===== */
-let CART = JSON.parse(localStorage.getItem('cart') || '[]');
-function saveCart(){ localStorage.setItem('cart', JSON.stringify(CART)); }
+    // store phone + admin pass stored in localStorage
+    let STORE_PHONE = localStorage.getItem('store_phone') || '';
+    let ADMIN_PASS = localStorage.getItem('admin_pass') || '1234'; // default 1234
 
-/* UI refs */
-const productsContainer = document.getElementById('productsContainer');
-const cartList = document.getElementById('cartList');
-const cartTotalEl = document.getElementById('cartTotal');
-const checkoutBtn = document.getElementById('checkoutBtn');
-const checkoutModal = document.getElementById('checkoutModal');
+    // cart stored in memory and saved in localStorage
+    let CART = JSON.parse(localStorage.getItem('cart') || '[]');
+          /* ========= products rendering ========= */
+    function escapeHtml(s){ return String(s||'').replaceAll('<','&lt;').replaceAll('>','&gt;') }
 
-/* render functions */
-function renderProducts(filter=''){
-  const products = loadProducts();
-  productsContainer.innerHTML = '';
-  const filtered = products.filter(p => (p.title + ' ' + (p.desc||'')).toLowerCase().includes(filter.toLowerCase()));
-  if(filtered.length===0){ document.getElementById('noProducts').style.display='block' } else { document.getElementById('noProducts').style.display='none' }
-  filtered.forEach(p => {
-    const div = document.createElement('div'); div.className='card product';
-    div.innerHTML = `
-      <img src="${p.image || 'https://via.placeholder.com/400x250?text=No+Image'}" alt="${p.title}" />
-      <div class="info">
-        <h3>${escapeHtml(p.title)}</h3>
-        <div class="small">${escapeHtml(p.desc || '')}</div>
-        <div class="price">Price: <strong>₹${p.price}</strong></div>
-        <div class="actions">
-          <button class="btn btn-primary" data-id="${p.id}" onclick="addToCart('${p.id}')">Add to Cart</button>
-          <button class="btn" onclick="orderWhatsApp('${p.id}')">Order via WhatsApp</button>
-          <button class="btn" style="background:#eee" onclick="editProduct('${p.id}')">Edit</button>
-        </div>
-      </div>`;
-    productsContainer.appendChild(div);
-  })
-}
-
-function renderCart(){
-  cartList.innerHTML = '';
-  let total = 0;
-  if(CART.length===0){ cartList.innerHTML = '<div class="note">Cart is empty</div>' }
-  CART.forEach(item=>{
-    const li = document.createElement('li'); li.className='cart-item';
-    li.innerHTML = `
-      <img src="${item.image || 'https://via.placeholder.com/80'}" style="width:48px;height:48px;border-radius:6px;object-fit:cover"/>
-      <div style="flex:1">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div><strong>${escapeHtml(item.title)}</strong><div class="small">₹${item.price} each</div></div>
-          <div>
-            <input class="qty" type="number" min="1" value="${item.qty}" onchange="changeQty('${item.id}', this.value)"/>
-            <button class="btn" style="background:#ffe6e6;color:#a00;margin-left:8px" onclick="removeFromCart('${item.id}')">Remove</button>
+    function renderProducts(filter){
+      const products = loadProducts();
+      productsContainer.innerHTML = '';
+      const list = products.filter(p => {
+        if(!filter) return true;
+        return p.title.toLowerCase().includes(filter.toLowerCase()) || (p.desc||'').toLowerCase().includes(filter.toLowerCase());
+      });
+      if(list.length===0){
+        document.getElementById('noProducts').style.display = 'block';
+        return;
+      } else {
+        document.getElementById('noProducts').style.display = 'none';
+      }
+      list.forEach(p=>{
+        const div = document.createElement('div');
+        div.className = 'product';
+        div.innerHTML = `
+          <img src="${escapeHtml(p.image)||'https://via.placeholder.com/120x80?text=No+Image'}" alt="${escapeHtml(p.title)}" />
+          <div class="info">
+            <h3>${escapeHtml(p.title)}</h3>
+            <div class="small">${escapeHtml(p.desc||'')}</div>
+            <div class="price">Price: <strong>₹${p.price}</strong></div>
+            <div class="actions">
+              <button class="btn btn-primary" data-id="${p.id}">Add to Cart</button>
+              <button class="btn" onclick="orderWhatsApp('${p.id}')">Order via WhatsApp</button>
+              <button class="btn" style="background:#f3f4f6" onclick="editProduct('${p.id}')">Edit</button>
+            </div>
           </div>
-        </div>
-      </div>`;
-    cartList.appendChild(li);
-    total += item.qty * item.price;
-  })
-  cartTotalEl.textContent = '₹' + total;
-  saveCart();
-}
+        `;
+        productsContainer.appendChild(div);
+      });
 
-/* ========== CART ACTIONS ========== */
-function addToCart(id){
-  const products = loadProducts();
-  const p = products.find(x=>x.id===id);
-  if(!p) return alert('Product not found');
-  const inCart = CART.find(i=>i.id===id);
-  if(inCart) inCart.qty += 1; else CART.push({id:p.id,title:p.title,price:p.price,image:p.image,qty:1});
-  renderCart();
-  alert('Added to cart');
-}
-function changeQty(id,val){
-  const v = parseInt(val) || 1;
-  const it = CART.find(i=>i.id===id);
-  if(it){ it.qty = v; renderCart(); }
-}
-function removeFromCart(id){
-  CART = CART.filter(i=>i.id!==id); renderCart();
-}
+      // attach add-to-cart listeners
+      document.querySelectorAll('.product .btn-primary').forEach(b=>{
+        b.addEventListener('click', (e)=>{
+          const id = e.currentTarget.getAttribute('data-id');
+          addToCart(id);
+        });
+      });
+    }
 
-/* ========== CHECKOUT ========== */
-checkoutBtn.addEventListener('click', ()=> {
-  if(CART.length===0) return alert('Cart empty');
-  openCheckout();
-});
-document.getElementById('closeCheckout').addEventListener('click', ()=> checkoutModal.style.display='none');
+    /* ========= cart rendering & helpers ========= */
+    function saveCart(){ localStorage.setItem('cart', JSON.stringify(CART)) }
+    function renderCart(){
+      cartList.innerHTML = '';
+      let total = 0;
+      if(CART.length===0){
+        cartList.innerHTML = '<div class="small-muted">Cart is empty</div>';
+        cartTotalEl.textContent = '₹0';
+        return;
+      }
+      CART.forEach(item=>{
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <img src="${escapeHtml(item.image||'https://via.placeholder.com/60')}" style="width:60px;height:48px;object-fit:cover;border-radius:6px"/>
+          <div style="flex:1">
+            <div><strong>${escapeHtml(item.title)}</strong></div>
+            <div class="small">${escapeHtml(item.desc||'')}</div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
+              <input class="qty" type="number" min="1" value="${item.qty}" style="width:72px;padding:6px;border-radius:8px;border:1px solid #e6e6e9"/>
+              <button class="btn" data-id="${item.id}" style="background:#ffecec">Remove</button>
+            </div>
+          </div>
+          <div style="text-align:right">₹${item.price*item.qty}</div>
+        `;
+        cartList.appendChild(li);
 
-function openCheckout(){
-  const node = document.getElementById('checkoutItems');
-  node.innerHTML = '';
-  let total = 0;
-  CART.forEach(i=>{
-    node.innerHTML += `<div class="order-row"><div>${escapeHtml(i.title)} x ${i.qty}</div><div>₹${i.price*i.qty}</div></div>`;
-    total += i.price*i.qty;
-  })
-  node.innerHTML += `<div style="text-align:right;margin-top:8px"><strong>Total: ₹${total}</strong></div>`;
-  checkoutModal.style.display = 'flex';
-}
+        // qty change
+        li.querySelector('.qty').addEventListener('change', (e)=>{
+          const v = parseInt(e.target.value) || 1;
+          item.qty = v;
+          saveCart(); renderCart();
+        });
+        // remove
+        li.querySelector('button[data-id]').addEventListener('click', ()=>{
+          CART = CART.filter(i => i.id !== item.id);
+          saveCart(); renderCart();
+        });
+        total += item.price * item.qty;
+      });
+      cartTotalEl.textContent = '₹' + total;
+    }
 
-/* place order (save locally) */
-document.getElementById('placeOrderBtn').addEventListener('click', ()=>{
-  const name = document.getElementById('cname').value.trim();
-  const phone = document.getElementById('cphone').value.trim();
-  const addr = document.getElementById('caddr').value.trim();
-  const cod = document.getElementById('codCheck').checked;
-  if(!name || !phone || !addr) return alert('Please fill name, phone and address');
-  const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-  const order = {
-    id: 'o'+Date.now().toString(36),
-    customer: {name,phone,addr},
-    items: CART,
-    cod,
-    created: new Date().toISOString()
-  };
-  orders.push(order);
-  localStorage.setItem('orders', JSON.stringify(orders));
-  CART = []; saveCart(); renderCart();
-  checkoutModal.style.display='none';
-  alert('Order placed locally (you can confirm via WhatsApp).');
-});
+    function addToCart(id){
+      const products = loadProducts();
+      const p = products.find(x => x.id === id);
+      if(!p) return alert('Product not found');
+      const inCart = CART.find(i => i.id === id);
+      if(inCart) inCart.qty += 1; else CART.push({id:p.id,title:p.title,price:p.price,image:p.image,desc:p.desc,qty:1});
+      saveCart();
+      renderCart();
+      alert('Added to cart');
+    }
 
-/* WhatsApp quick order */
-document.getElementById('whatsappOrder').addEventListener('click', ()=> {
-  whatsappOrderFromCheckout();
-});
+    /* ========= checkout / order helpers ========= */
+    checkoutBtn.addEventListener('click', ()=>{
+      if(CART.length===0) return alert('Cart empty');
+      openCheckout();
+    });
+    closeCheckout.addEventListener('click', ()=> checkoutModal.style.display = 'none');
 
-function whatsappOrderFromCheckout(){
-  const name = document.getElementById('cname').value.trim();
-  const phone = document.getElementById('cphone').value.trim();
-  const addr = document.getElementById('caddr').value.trim();
-  if(!name || !phone || !addr) return alert('Please fill name, phone and address');
-  const cod = document.getElementById('codCheck').checked;
-  sendWhatsAppOrder({name,phone,addr,cod,items:CART});
-}
+    function openCheckout(){
+      checkoutItems.innerHTML = '';
+      let total = 0;
+      CART.forEach(i=>{
+        const row = document.createElement('div');
+        row.style.padding = '6px 0';
+        row.innerHTML = `<div>${escapeHtml(i.title)} x ${i.qty} — ₹${i.price*i.qty}</div>`;
+        checkoutItems.appendChild(row);
+        total += i.price * i.qty;
+      });
+      const footer = document.createElement('div');
+      footer.style.marginTop = '12px';
+      footer.innerHTML = `<div style="text-align:right;font-weight:700">Total: ₹${total}</div>`;
+      checkoutItems.appendChild(footer);
+      checkoutModal.style.display = 'flex';
+    }
 
-/* send WhatsApp for a single product (order now) */
-function orderWhatsApp(productId){
-  const products = loadProducts();
-  const p = products.find(x=>x.id===productId);
-  if(!p) return;
-  sendWhatsAppOrder({items:[{title:p.title,price:p.price,qty:1}],name:'',phone:'',addr:'',cod:false});
-}
+    placeOrderBtn.addEventListener('click', ()=>{
+      const name = document.getElementById('cname').value.trim();
+      const phone = document.getElementById('cphone').value.trim();
+      const addr = document.getElementById('caddr').value.trim();
+      const cod = document.getElementById('codCheck').checked;
+      if(!name || !phone || !addr) return alert('Please fill name, phone and address');
+      // save order locally
+      const orders = JSON.parse(localStorage.getItem('orders')||'[]');
+      const order = { id: 'o'+Date.now().toString(36), customer:{name,phone,addr}, items:CART, cod, created: new Date().toISOString() };
+      orders.push(order);
+      localStorage.setItem('orders', JSON.stringify(orders));
+      CART = []; saveCart(); renderCart();
+      checkoutModal.style.display = 'none';
+      alert('Order placed locally (you can confirm via WhatsApp)');
+    });
 
-function sendWhatsAppOrder(order){
-  let phone = localStorage.getItem('store_phone') || STORE_PHONE || DEFAULT_PHONE;
-  if(!phone || phone.includes('REPLACE_ME')) return alert('Set store WhatsApp number in Admin (format +91xxxxxxxxxx)');
-  // build message
-  let msg = `New order from Good Star Enterprises%0A%0A`;
-  if(order.name) msg += `Name: ${encodeURIComponent(order.name)}%0A`;
-  if(order.phone) msg += `Phone: ${encodeURIComponent(order.phone)}%0A`;
-  if(order.addr) msg += `Address: ${encodeURIComponent(order.addr)}%0A`;
-  msg += `%0AItems:%0A`;
-  let total=0;
-  order.items.forEach(it=>{
-    msg += `- ${encodeURIComponent(it.title)} x ${it.qty} = ₹${it.price*it.qty}%0A`;
-    total += it.price*it.qty;
-  });
-  msg += `%0ATotal: ₹${total}%0A`;
-  if(order.cod) msg += `%0APayment: Cash on Delivery%0A`;
-  const wa = `https://wa.me/${phone.replace('+','')}?text=${msg}`;
-  window.open(wa,'_blank');
-}/* ADMIN PASSWORD */
-let ADMIN_PASS = localStorage.getItem('admin_pass') || "1234";
+    whatsappOrder.addEventListener('click', ()=>{
+      whatsappOrderFromCheckout();
+    });
 
-/* ======= ADMIN ======= */
-const adminToggle = document.getElementById('adminToggle');
-const adminPanel = document.getElementById('adminPanel');
+    function whatsappOrderFromCheckout(){
+      const name = document.getElementById('cname').value.trim();
+      const phone = document.getElementById('cphone').value.trim();
+      const addr = document.getElementById('caddr').value.trim();
+      const cod = document.getElementById('codCheck').checked;
+      if(!name || !phone || !addr) return alert('Please fill name, phone and address');
+      sendWhatsAppOrder({name,phone,addr,cod,items:CART});
+    }
 
-adminToggle.addEventListener('click', ()=>{
-  const pass = prompt('Enter admin password:');
-  if(pass===ADMIN_PASS){
-    adminPanel.style.display = adminPanel.style.display === 'block' ? 'none' : 'block';
-    renderAdminSettings();
-  } else {
-    alert('Wrong password');
-  }
-});
+    function orderWhatsApp(productId){
+      const products = loadProducts();
+      const p = products.find(x=>x.id===productId);
+      if(!p) return;
+      sendWhatsAppOrder({items:[{title:p.title,price:p.price,qty:1}], name:'', phone:'', addr:'', cod:false});
+    }
 
-function renderAdminSettings(){
-  const products = loadProducts();
-  document.getElementById('storePhone').value = localStorage.getItem('store_phone') || STORE_PHONE || '';
-}
+    function sendWhatsAppOrder(order){
+      const phone = localStorage.getItem('store_phone') || STORE_PHONE || '';
+      if(!phone || phone.includes('REPLACE_ME')) return alert('Store phone not set. Set it in Admin settings.');
+      let msg = `New order from Good Star Enterprises%0A%0A`;
+      if(order.name) msg += `Name: ${encodeURIComponent(order.name)}%0A`;
+      if(order.phone) msg += `Phone: ${encodeURIComponent(order.phone)}%0A`;
+      if(order.addr) msg += `Address: ${encodeURIComponent(order.addr)}%0A`;
+      msg += `%0AItems:%0A`;
+      let total = 0;
+      order.items.forEach(it=>{
+        msg += `- ${encodeURIComponent(it.title)} x ${it.qty} = ₹${it.price * it.qty}%0A`;
+        total += it.price * it.qty;
+      });
+      msg += `%0ATotal: ₹${total}%0A`;
+      if(order.cod) msg += `%0APayment: Cash on Delivery%0A`;
+      const wa = `https://wa.me/${phone.replace('+','')}?text=${msg}`;
+      window.open(wa, '_blank');
+    }
 
-/* add/update product */
-document.getElementById('addProductBtn').addEventListener('click', ()=>{
-  const title = document.getElementById('pTitle').value.trim();
-  const price = parseFloat(document.getElementById('pPrice').value) || 0;
-  const image = document.getElementById('pImage').value.trim();
-  const desc = document.getElementById('pDesc').value.trim();
-  if(!title || !price) return alert('Provide title and price');
-  const products = loadProducts();
-  // if title exists update first found
-  let existing = products.find(p => p.title.toLowerCase()===title.toLowerCase());
-  if(existing){
-    existing.price = price; existing.image = image; existing.desc = desc;
-  } else {
-    products.unshift({id:uid(),title,price,image,desc});
-  }
-  saveProducts(products); renderProducts(); alert('Saved');
-  document.getElementById('pTitle').value=''; document.getElementById('pPrice').value=''; document.getElementById('pImage').value=''; document.getElementById('pDesc').value='';
-});
+    /* ========= ADMIN: open, render, add/edit ======== */
+    adminToggle.addEventListener('click', ()=>{
+      const pass = prompt('Enter admin password:');
+      if(pass === ADMIN_PASS){
+        adminPanel.style.display = adminPanel.style.display === 'block' ? 'none' : 'block';
+        renderAdminSettings();
+      } else {
+        alert('Wrong password');
+      }
+    });
 
-/* edit product by id (from product card) */
-function editProduct(id){
-  const products = loadProducts();
-  const p = products.find(x=>x.id===id);
-  if(!p) return alert('Not found');
-  // show in admin inputs for editing
-  adminPanel.style.display='block';
-  document.getElementById('pTitle').value = p.title;
-  document.getElementById('pPrice').value = p.price;
-  document.getElementById('pImage').value = p.image;
-  document.getElementById('pDesc').value = p.desc || '';
-  // when add/update clicked it will update existing based on title match
-}
+    function renderAdminSettings(){
+      const products = loadProducts();
+      document.getElementById('storePhone').value = localStorage.getItem('store_phone') || STORE_PHONE || '';
+    }
 
-/* clear all - admin */
-document.getElementById('clearProducts').addEventListener('click', ()=>{
-  if(!confirm('Clear all products? This cannot be undone.')) return;
-  localStorage.removeItem('products');
-  renderProducts();
-});
+    addProductBtn.addEventListener('click', ()=>{
+      const title = pTitle.value.trim();
+      const price = parseFloat(pPrice.value);
+      const image = pImage.value.trim();
+      const desc = pDesc.value.trim();
+      if(!title || !price) return alert('Provide title and price');
+      const products = loadProducts();
+      // if product with same title exists, update it
+      let existing = products.find(p => p.title.toLowerCase() === title.toLowerCase());
+      if(existing){
+        existing.price = price; existing.image = image; existing.desc = desc;
+      } else {
+        products.unshift({ id: uid(), title, price, image, desc });
+      }
+      saveProducts(products);
+      pTitle.value=''; pPrice.value=''; pImage.value=''; pDesc.value='';
+      alert('Saved product');
+      renderProducts(searchEl.value);
+      renderAdminSettings();
+    });
 
-/* store settings save */
-document.getElementById('saveSettings').addEventListener('click', ()=>{
-  const v = document.getElementById('storePhone').value.trim();
-  if(!v) return alert('Enter phone like +91XXXXXXXXXX');
-  localStorage.setItem('store_phone', v);
-  STORE_PHONE = v;
-  alert('Saved store phone');
-});
+    clearProductsBtn.addEventListener('click', ()=>{
+      if(!confirm('Clear all products?')) return;
+      localStorage.removeItem('products');
+      renderProducts();
+    });
 
-/* change admin pass */
-document.getElementById('changePass').addEventListener('click', ()=>{
-  const v = document.getElementById('adminPass').value.trim();
-  if(!v) return alert('Enter new password');
-  ADMIN_PASS = v; localStorage.setItem('admin_pass', v);
-  document.getElementById('adminPass').value='';
-  alert('Admin password changed');
-});
+    function editProduct(id){
+      const products = loadProducts();
+      const p = products.find(x=>x.id===id);
+      if(!p) return alert('Not found');
+      adminPanel.style.display = 'block';
+      pTitle.value = p.title; pPrice.value = p.price; pImage.value = p.image; pDesc.value = p.desc;
+      // when saved via add button it will update existing
+    }
 
-/* search */
-document.getElementById('search').addEventListener('input', (e)=> renderProducts(e.target.value));
+    /* search */
+    searchEl.addEventListener('input', (e)=> renderProducts(e.target.value) );
 
-/* util escape */
-function escapeHtml(s){ return String(s||'').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+    /* init */
+    function init(){
+      // seed demo products if none
+      if(!localStorage.getItem('products')){
+        const seed = [
+          { id: uid(), title: 'Priya Style Heater RET-450', price: 599, image:'', desc:'Compact room heater, fast warming.'},
+          { id: uid(), title: 'Good Star Classic Heater RET-525', price: 899, image:'', desc:'Classic model with safety features.'}
+        ];
+        saveProducts(seed);
+      }
+      renderProducts();
+      renderCart();
+      // set Visit link to deployed origin (so admin "Open Store" points to same)
+      const origin = window.location.origin;
+      document.getElementById('visitSite').href = origin;
+    }
+    // expose for inline onclicks
+    window.addToCart = addToCart;
+    window.orderWhatsApp = orderWhatsApp;
+    window.editProduct = editProduct;
 
-/* init */
-function init(){
-  // set Visit link to deployed domain if exists
-  const origin = window.location.origin;
-  document.getElementById('visitSite').href = origin;
-  renderProducts();
-  renderCart();
-  // if no products seed demo
-  if(!localStorage.getItem('products')) saveProducts(demoProducts);
-}
-init();
+    // call init at bottom in Part 3 after ADMIN_PASS variable set etc.
+          /* ========= ADMIN PASSWORD (DEFAULT) ========= */
+    // Change this to your own password
+    let ADMIN_PASS = localStorage.getItem('admin_pass') || "1234";
 
-/* expose a few funcs globally for inline onclicks */
-window.addToCart = addToCart;
-window.orderWhatsApp = orderWhatsApp;
-window.editProduct = editProduct;
-</script>
+    // Save new admin password
+    document.getElementById('changePass').addEventListener('click', ()=>{
+      const v = document.getElementById('adminPass').value.trim();
+      if(!v) return alert('Enter new password');
+      ADMIN_PASS = v;
+      localStorage.setItem('admin_pass', v);
+      document.getElementById('adminPass').value = '';
+      alert('Admin password changed');
+    });
+
+    /* ========= STORE PHONE SAVE ========= */
+    document.getElementById('saveSettings').addEventListener('click', ()=>{
+      const v = document.getElementById('storePhone').value.trim();
+      if(!v) return alert('Enter store phone number like +91XXXXXXXXXX');
+      localStorage.setItem('store_phone', v);
+      STORE_PHONE = v;
+      alert('Saved store phone');
+    });
+
+    /* ========= CALL INIT() LAST ========= */
+    init();
+  </script>
 </body>
 </html>
